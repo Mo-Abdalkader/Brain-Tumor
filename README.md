@@ -34,8 +34,8 @@ A web application to detect and classify brain tumors from MRI scans using deep 
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/Mo-Abdalkader/Projcts.git
-   cd Projects\AI\02 Deep Learning\Computer Vision\Brain Tumor
+   git clone https://github.com/Mo-Abdalkader/Brain-Tumor.git
+   cd Brain Tumor
    ```
 
 2. Create and activate a virtual environment:
@@ -148,3 +148,4 @@ The deep learning model uses a convolutional neural network architecture trained
 ---
 
 > **Disclaimer**: This application is for educational and research purposes only. It should not be used for medical diagnosis. Always consult with healthcare professionals for medical advice.
+
