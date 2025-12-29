@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brain Tumor Classification</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="background-image"></div>
+
+    <!-- Visitor Stats Widget -->
+    <div class="visitor-stats">
+        <i class="fas fa-users"></i> <span id="uniqueVisitors">0</span> unique |
+        <i class="fas fa-eye"></i> <span id="totalVisits">0</span> visits
+    </div>
+
+    <!-- Admin Link -->
+    <a href="/stats" class="admin-stats-link">
+        <i class="fas fa-chart-bar"></i> View Stats
+    </a>
+
+    <div class="container">
+        <header>
+            <h1>Brain Tumor Classification</h1>
+            <p>Upload an MRI scan to detect the type of brain tumor</p>
+        </header>
+
+        <div class="upload-area" id="uploadArea">
+            <div class="upload-icon">
+                <i class="fas fa-cloud-upload-alt"></i>
+            </div>
+            <p>Drag & Drop your MRI image here or click to browse</p>
+            <input type="file" id="fileInput" accept="image/*">
+            <button id="uploadBtn" class="btn-primary">Upload Image</button>
+        </div>
+
+        <div class="result-area hidden" id="resultArea">
+            <div class="image-preview">
+                <img id="previewImage" src="" alt="MRI Scan">
+            </div>
+            <div class="result-details">
+                <h2>Analysis Result</h2>
+                <div class="result-item">
+                    <span class="label">Diagnosis:</span>
+                    <span class="value" id="diagnosis">-</span>
+                </div>
+                <div class="result-item">
+                    <span class="label">Confidence:</span>
+                    <span class="value" id="confidence">-</span>
+                </div>
+                <div class="disease-info" id="diseaseInfo">
+                    <h3>About this condition:</h3>
+                    <p id="diseaseDescription"></p>
+                    <p><strong>Location:</strong> <span id="diseaseLocation"></span></p>
+                    <p><strong>Danger Level:</strong> <span id="diseaseDanger"></span></p>
+                    <h3>Recommended Actions:</h3>
+                    <p id="diseaseAdvice"></p>
+                </div>
+                <div class="result-actions">
+                    <button id="analyzeAnother" class="btn-primary">Analyze Another Image</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Buttons Section -->
+        <div class="buttons-section">
+            <h2>Brain Tumor Types</h2>
+            <p>Click on a button to learn more about each type of brain tumor</p>
+            
+            <div class="button-container">
+                <button class="info-button" data-disease="Glioma">
+                    <i class="fas fa-brain"></i>
+                    <span>Glioma</span>
+                </button>
+                
+                <button class="info-button" data-disease="Meningioma">
+                    <i class="fas fa-layer-group"></i>
+                    <span>Meningioma</span>
+                </button>
+                
+                <button class="info-button" data-disease="Pituitary">
+                    <i class="fas fa-bullseye"></i>
+                    <span>Pituitary</span>
+                </button>
+                
+                <button class="info-button" data-disease="No Tumor">
+                    <i class="fas fa-check-circle"></i>
+                    <span>No Tumor</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Hidden Content for Sidebar -->
+        <div class="hidden-content">
+            <div id="Glioma-content" class="disease-content">
+                <h2><i class="fas fa-brain"></i> Glioma</h2>
+                <div class="content-divider"></div>
+                
+                <section class="content-section">
+                    <h3><i class="fas fa-info-circle"></i> Description</h3>
+                    <p>Gliomas are tumors that occur in the brain and spinal cord, originating from glial cells that support nerve cells. They are the most common type of primary brain tumor and can be aggressive.</p>
+                </section>
+                
+                <section class="content-section">
+                    <h3><i class="fas fa-map-marker-alt"></i> Location</h3>
+                    <p>Can occur anywhere in the brain or spinal cord where glial cells are present, including:</p>
+                    <ul>
+                        <li>Cerebral hemispheres</li>
+                        <li>Brainstem</li>
+                        <li>Cerebellum</li>
+                        <li>Spinal cord</li>
+                    </ul>
+                </section>
+                
+                <section class="content-section danger-high">
+                    <h3><i class="fas fa-exclamation-triangle"></i> Danger Level: High</h3>
+                    <p>Some gliomas are malignant and can grow aggressively, infiltrating surrounding brain tissue and making complete surgical removal difficult.</p>
+                    <div class="danger-meter">
+                        <div class="danger-level" style="width: 90%;"></div>
+                    </div>
+                </section>
+                
+                <section class="content-section">
+                    <h3><i class="fas fa-procedures"></i> Treatment Options</h3>
+                    <ul>
+                        <li><strong>Surgery:</strong> To remove as much of the tumor as safely possible</li>
+                        <li><strong>Radiation therapy:</strong> To kill remaining tumor cells</li>
+                        <li><strong>Chemotherapy:</strong> Often using temozolomide (Temodar)</li>
+                        <li><strong>Targeted therapy:</strong> For tumors with specific genetic mutations</li>
+                        <li><strong>Tumor Treating Fields:</strong> A newer approach using electrical fields</li>
+                    </ul>
+                </section>
+                
+                <section class="content-section">
+                    <h3><i class="fas fa-file-medical"></i> Next Steps</h3>
+                    <p>If diagnosed with a glioma:</p>
+                    <ol>
+                        <li>Consult with a neuro-oncologist immediately</li>
+                        <li>Consider getting a second opinion</li>
+                        <li>Discuss all treatment options with your healthcare team</li>
+                        <li>Prepare for potential neurological symptoms</li>
+                        <li>Seek psychological support for you and your family</li>
+                    </ol>
+                </section>
+            </div>
+            
+            <div id="Meningioma-content" class="disease-content">
+                <h2><i class="fas fa-layer-group"></i> Meningioma</h2>
+                <div class="content-divider"></div>
+                
+                <section class="content-section">
+                    <h3><i class="fas fa-info-circle"></i> Description</h3>
+                    <p>Meningiomas are tumors that arise from the meninges, the membranes surrounding the brain and spinal cord. They are typically slow-growing and often benign (noncancerous).</p>
+                </section>
+                
+                <section class="content-section">
+                    <h3><i class="fas fa-map-marker-alt"></i> Location</h3>
+                    <p>Meningiomas can form anywhere along the meninges, but common locations include:</p>
+                    <ul>
+                        <li>Parasagittal/falx (near the top of the brain)</li>
+                        <li>Convexity (the brain's surface)</li>
+                        <li>Sphenoid ridge (behind the eyes)</li>
+                        <li>Olfactory groove (near the nose)</li>
+                        <li>Suprasellar region (near the pituitary gland)</li>
+                        <li>Posterior fossa (lower back of the brain)</li>
+                    </ul>
+                </section>
+                
+                <section class="content-section danger-medium">
+                    <h3><i class="fas fa-exclamation-triangle"></i> Danger Level: Medium</h3>
+                    <p>Usually benign but can cause problems by pressing on brain tissue, nerves, or blood vessels. Rarely, they can become atypical or malignant.</p>
+                    <div class="danger-meter">
+                        <div class="danger-level" style="width: 60%;"></div>
+                    </div>
+                </section>
+                
+                <section class="content-section">
+                    <h3><i class="fas fa-procedures"></i> Treatment Options</h3>
+                    <ul>
+                        <li><strong>Observation:</strong> For small, asymptomatic meningiomas</li>
+                        <li><strong>Surgery:</strong> Complete removal when possible</li>
+                        <li><strong>Radiation therapy:</strong> For tumors that cannot be fully removed</li>
+                        <li><strong>Stereotactic radiosurgery:</strong> Precisely targeted radiation</li>
+                    </ul>
+                </section>
+                
+                <section class="content-section">
+                    <h3><i class="fas fa-file-medical"></i> Next Steps</h3>
+                    <p>If diagnosed with a meningioma:</p>
+                    <ol>
+                        <li>Discuss with a neurosurgeon whether intervention is needed</li>
+                        <li>If asymptomatic, regular MRI monitoring may be sufficient</li>
+                        <li>Be aware of potential symptoms that might develop</li>
+                        <li>Understand that complete removal often results in cure</li>
+                    </ol>
+                </section>
+            </div>
+            
+            <div id="Pituitary-content" class="disease-content">
+                <h2><i class="fas fa-bullseye"></i> Pituitary Tumor</h2>
+                <div class="content-divider"></div>
+                
+                <section class="content-section">
+                    <h3><i class="fas fa-info-circle"></i> Description</h3>
+                    <p>Pituitary tumors are abnormal growths that develop in the pituitary gland, which regulates many hormones that control important bodily functions. Most pituitary tumors are benign adenomas.</p>
+                </section>
+                
+                <section class="content-section">
+                    <h3><i class="fas fa-map-marker-alt"></i> Location</h3>
+                    <p>Located specifically in the pituitary gland, which sits in a small bony cavity (sella turcica) at the base of the brain, just below the hypothalamus.</p>
+                </section>
+                
+                <section class="content-section danger-low">
+                    <h3><i class="fas fa-exclamation-triangle"></i> Danger Level: Low to Medium</h3>
+                    <p>Typically benign but can disrupt hormone balance throughout the body. May cause vision problems if they grow upward toward the optic nerves.</p>
+                    <div class="danger-meter">
+                        <div class="danger-level" style="width: 40%;"></div>
+                    </div>
+                </section>
+                
+                <section class="content-section">
+                    <h3><i class="fas fa-procedures"></i> Treatment Options</h3>
+                    <ul>
+                        <li><strong>Medication:</strong> To shrink the tumor or control hormone production</li>
+                        <li><strong>Transsphenoidal surgery:</strong> Removal through the nasal passage</li>
+                        <li><strong>Radiation therapy:</strong> For tumors that cannot be fully removed</li>
+                        <li><strong>Hormone replacement therapy:</strong> If normal hormone production is affected</li>
+                    </ul>
+                </section>
+                
+                <section class="content-section">
+                    <h3><i class="fas fa-file-medical"></i> Next Steps</h3>
+                    <p>If diagnosed with a pituitary tumor:</p>
+                    <ol>
+                        <li>Consult with an endocrinologist for hormone evaluation</li>
+                        <li>Have vision tests if the tumor is near the optic nerves</li>
+                        <li>Discuss treatment options based on tumor type and hormone status</li>
+                        <li>Regular monitoring of hormone levels</li>
+                    </ol>
+                </section>
+            </div>
+            
+            <div id="No Tumor-content" class="disease-content">
+                <h2><i class="fas fa-check-circle"></i> No Tumor Detected</h2>
+                <div class="content-divider"></div>
+                
+                <section class="content-section">
+                    <h3><i class="fas fa-info-circle"></i> Description</h3>
+                    <p>No signs of tumorous growth detected in the brain scan. This indicates normal brain tissue without evidence of abnormal masses.</p>
+                </section>
+                
+                <section class="content-section">
+                    <h3><i class="fas fa-map-marker-alt"></i> Location</h3>
+                    <p>Not applicable - no tumor present</p>
+                </section>
+                
+                <section class="content-section danger-none">
+                    <h3><i class="fas fa-exclamation-triangle"></i> Danger Level: None</h3>
+                    <p>With no tumor detected, there is no immediate danger related to brain tumors.</p>
+                    <div class="danger-meter">
+                        <div class="danger-level" style="width: 0%;"></div>
+                    </div>
+                </section>
+                
+                <section class="content-section">
+                    <h3><i class="fas fa-heartbeat"></i> Recommendations</h3>
+                    <ul>
+                        <li>Continue regular medical check-ups</li>
+                        <li>Maintain a healthy lifestyle</li>
+                        <li>Monitor any neurological symptoms should they develop</li>
+                        <li>Follow up with your doctor if you experience persistent headaches, vision changes, or other concerning symptoms</li>
+                    </ul>
+                </section>
+                
+                <section class="content-section">
+                    <h3><i class="fas fa-brain"></i> Brain Health Tips</h3>
+                    <ul>
+                        <li><strong>Mental exercise:</strong> Keep your mind active with puzzles, reading, and learning</li>
+                        <li><strong>Physical activity:</strong> Regular exercise improves blood flow to the brain</li>
+                        <li><strong>Healthy diet:</strong> Foods rich in antioxidants and omega-3 fatty acids</li>
+                        <li><strong>Quality sleep:</strong> Aim for 7-9 hours of restorative sleep</li>
+                        <li><strong>Stress management:</strong> Practice relaxation techniques</li>
+                    </ul>
+                </section>
+            </div>
+        </div>
+
+        <!-- Info Sidebar -->
+        <div class="sidebar" id="infoSidebar">
+            <div class="sidebar-content">
+                <button class="close-sidebar" id="closeSidebar">
+                    <i class="fas fa-times"></i>
+                </button>
+                <div class="sidebar-scroll-area" id="sidebarContent">
+                    <!-- Content will be loaded here via JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>Brain Tumor Classification System &copy; 2023</p>
+        <p>Developed by Mohamed Abdalkader</p>
+        <p>
+            <a href="mailto:Mohameed.Abdalkadeer@gmail.com" target="_blank">
+                <i class="fas fa-envelope"></i> Email
+            </a> |
+            <a href="https://www.linkedin.com/in/mo-abdalkader/" target="_blank">
+                <i class="fab fa-linkedin"></i> LinkedIn
+            </a> |
+            <a href="https://github.com/Mo-Abdalkader" target="_blank">
+                <i class="fab fa-github"></i> GitHub
+            </a>
+        </p>
+        <div class="tech-badges">
+            <img src="https://img.shields.io/badge/Python-3.8%2B-blue" alt="Python">
+            <img src="https://img.shields.io/badge/Flask-2.0-lightgrey" alt="Flask">
+            <img src="https://img.shields.io/badge/TensorFlow-2.6-orange" alt="TensorFlow">
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize elements
+            const uploadArea = document.getElementById('uploadArea');
+            let fileInput = document.getElementById('fileInput');
+            const uploadBtn = document.getElementById('uploadBtn');
+            const resultArea = document.getElementById('resultArea');
+            const previewImage = document.getElementById('previewImage');
+            const diagnosisElement = document.getElementById('diagnosis');
+            const confidenceElement = document.getElementById('confidence');
+            const analyzeAnotherBtn = document.getElementById('analyzeAnother');
+            const diseaseDescription = document.getElementById('diseaseDescription');
+            const diseaseLocation = document.getElementById('diseaseLocation');
+            const diseaseDanger = document.getElementById('diseaseDanger');
+            const diseaseAdvice = document.getElementById('diseaseAdvice');
+            const sidebar = document.getElementById('infoSidebar');
+            const sidebarContent = document.getElementById('sidebarContent');
+            const closeSidebarBtn = document.getElementById('closeSidebar');
+            
+            // Current active disease button
+            let activeDisease = null;
+
+            // Initialize visitor stats
+            updateVisitorStats();
+            setInterval(updateVisitorStats, 30000); // Update every 30 seconds
+
+            // Sidebar functionality
+            const infoButtons = document.querySelectorAll('.info-button');
+            infoButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const disease = this.getAttribute('data-disease');
+                    
+                    // If clicking the same button that's already active, close the sidebar
+                    if (activeDisease === disease) {
+                        closeSidebar();
+                        return;
+                    }
+                    
+                    // Set active disease and button
+                    activeDisease = disease;
+                    
+                    // Reset all buttons to inactive state
+                    infoButtons.forEach(btn => btn.classList.remove('active'));
+                    
+                    // Set clicked button to active state
+                    this.classList.add('active');
+                    
+                    // Get content for the sidebar
+                    const contentElement = document.getElementById(`${disease}-content`);
+                    if (contentElement) {
+                        sidebarContent.innerHTML = contentElement.innerHTML;
+                        sidebar.classList.add('active');
+                        
+                        // Add slide-in animation
+                        sidebar.style.animation = 'slideIn 0.3s forwards';
+                    }
+                });
+            });
+
+            // Close sidebar button
+            closeSidebarBtn.addEventListener('click', closeSidebar);
+
+            function closeSidebar() {
+                sidebar.style.animation = 'slideOut 0.3s forwards';
+                
+                setTimeout(() => {
+                    sidebar.classList.remove('active');
+                    
+                    // Reset active state
+                    if (activeDisease) {
+                        document.querySelector(`.info-button[data-disease="${activeDisease}"]`).classList.remove('active');
+                        activeDisease = null;
+                    }
+                }, 300);
+            }
+
+            // Drag and drop functionality
+            uploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadArea.classList.add('dragover');
+            });
+
+            uploadArea.addEventListener('dragleave', () => {
+                uploadArea.classList.remove('dragover');
+            });
+
+            uploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadArea.classList.remove('dragover');
+                if (e.dataTransfer.files.length) {
+                    fileInput.files = e.dataTransfer.files;
+                    handleFileUpload();
+                }
+            });
+
+            // File input handling
+            uploadArea.addEventListener('click', () => fileInput.click());
+            fileInput.addEventListener('change', handleFileUpload);
+            uploadBtn.addEventListener('click', () => fileInput.files.length ? handleFileUpload() : alert('Please select a file first'));
+
+            // Analyze another image button
+            analyzeAnotherBtn.addEventListener('click', resetUploadArea);
+
+            // Functions
+            function handleFileUpload() {
+                const file = fileInput.files[0];
+                if (!file.type.match('image.*')) {
+                    alert('Please upload an image file (JPEG, PNG)');
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewImage.src = e.target.result;
+                    uploadArea.innerHTML = '<div class="loader"><div class="spinner"></div><p>Analyzing image...</p></div>';
+                    uploadAndAnalyze(file);
+                };
+                reader.readAsDataURL(file);
+            }
+
+            function uploadAndAnalyze(file) {
+                const formData = new FormData();
+                formData.append('file', file);
+
+                fetch('/predict', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.error) throw new Error(data.error);
+
+                    // Display results
+                    diagnosisElement.textContent = data.class;
+                    confidenceElement.textContent = `${(data.confidence * 100).toFixed(2)}%`;
+                    diseaseDescription.textContent = data.info.description;
+                    diseaseLocation.textContent = data.info.location;
+                    diseaseDanger.textContent = data.info.danger;
+                    diseaseAdvice.textContent = data.info.advice;
+                    
+                    // Keep the preview image that was already set from FileReader
+                    // (No need to change it since we're displaying the original upload)
+
+                    // Show result area
+                    uploadArea.classList.add('hidden');
+                    resultArea.classList.remove('hidden');
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert(`Error: ${error.message}`);
+                    resetUploadArea();
+                });
+            }
+
+            function resetUploadArea() {
+                uploadArea.innerHTML = `
+                    <div class="upload-icon">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                    </div>
+                    <p>Drag & Drop your MRI image here or click to browse</p>
+                    <input type="file" id="fileInput" accept="image/*">
+                    <button id="uploadBtn" class="btn-primary">Upload Image</button>
+                `;
+
+                // Reinitialize elements and event listeners
+                fileInput = document.getElementById('fileInput');
+                fileInput.addEventListener('change', handleFileUpload);
+                document.getElementById('uploadBtn').addEventListener('click', () => fileInput.files.length ? handleFileUpload() : alert('Please select a file first'));
+
+                resultArea.classList.add('hidden');
+                uploadArea.classList.remove('hidden');
+            }
+
+            function updateVisitorStats() {
+                fetch('/get_stats')
+                    .then(response => response.json())
+                    .then(data => {
+                        document.getElementById('totalVisits').textContent = data.total_visits;
+                        document.getElementById('uniqueVisitors').textContent = data.unique_visitors;
+                    })
+                    .catch(error => console.error('Error fetching stats:', error));
+            }
+        });
+    </script>
+</body>
+</html>

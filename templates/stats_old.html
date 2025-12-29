@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Statistics Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="background-image"></div>
+
+    <div class="admin-container">
+        <header>
+            <h1><i class="fas fa-chart-line"></i> Admin Dashboard</h1>
+            <p>Visitor statistics and system analytics</p>
+        </header>
+
+        <div class="stats-grid">
+            <!-- Real-time Stats Cards -->
+            <div class="stat-card">
+                <div class="stat-icon online">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>Online Now</h3>
+                    <p id="onlineNow">0</p>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon total">
+                    <i class="fas fa-eye"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>Total Visits</h3>
+                    <p id="totalVisits">0</p>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon unique">
+                    <i class="fas fa-user-plus"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>Unique Visitors</h3>
+                    <p id="uniqueVisitors">0</p>
+                </div>
+            </div>
+
+            <!-- Charts Section -->
+            <div class="chart-container">
+                <canvas id="visitsChart"></canvas>
+            </div>
+
+            <div class="chart-container">
+                <canvas id="timeChart"></canvas>
+            </div>
+
+            <!-- IP Activity Table -->
+            <div class="table-container">
+                <h2><i class="fas fa-address-book"></i> Recent IP Activity</h2>
+                <div class="table-scroll">
+                    <table id="ipTable">
+                        <thead>
+                            <tr>
+                                <th>IP Address</th>
+                                <th>Visits</th>
+                                <th>Last Seen</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Will be populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="admin-actions">
+            <button id="refreshStats" class="admin-btn">
+                <i class="fas fa-sync-alt"></i> Refresh Data
+            </button>
+            <a href="/" class="admin-btn">
+                <i class="fas fa-home"></i> Return to App
+            </a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize charts
+            const visitsCtx = document.getElementById('visitsChart').getContext('2d');
+            const timeCtx = document.getElementById('timeChart').getContext('2d');
+            
+            let visitsChart = new Chart(visitsCtx, {
+                type: 'bar',
+                data: { labels: [], datasets: [{
+                    label: 'Visits per IP',
+                    backgroundColor: '#3498db',
+                    data: []
+                }]},
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+
+            let timeChart = new Chart(timeCtx, {
+                type: 'line',
+                data: { labels: [], datasets: [{
+                    label: 'Visits Timeline',
+                    borderColor: '#2ecc71',
+                    fill: false,
+                    data: []
+                }]},
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+
+            // Load initial data
+            fetchStats();
+            
+            // Set up auto-refresh
+            setInterval(fetchStats, 10000);
+            
+            // Manual refresh button
+            document.getElementById('refreshStats').addEventListener('click', fetchStats);
+
+            // Connect to live stats stream
+            const eventSource = new EventSource('/live_stats');
+            eventSource.onmessage = function(e) {
+                const data = JSON.parse(e.data);
+                document.getElementById('onlineNow').textContent = data.current_online;
+                document.getElementById('totalVisits').textContent = data.total_visits;
+                document.getElementById('uniqueVisitors').textContent = data.unique_visitors;
+            };
+
+            function fetchStats() {
+                fetch('/get_stats')
+                    .then(response => response.json())
+                    .then(data => {
+                        // Update summary cards
+                        document.getElementById('totalVisits').textContent = data.total_visits;
+                        document.getElementById('uniqueVisitors').textContent = data.unique_visitors;
+                        
+                        // Update IP table
+                        const ipTable = document.querySelector('#ipTable tbody');
+                        ipTable.innerHTML = '';
+                        
+                        const ipData = Object.entries(data.ip_data).sort((a, b) => b[1] - a[1]);
+                        
+                        ipData.slice(0, 10).forEach(([ip, count]) => {
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                                <td>${ip}</td>
+                                <td>${count}</td>
+                                <td>${new Date(data.timestamps[ip]).toLocaleString()}</td>
+                            `;
+                            ipTable.appendChild(row);
+                        });
+                        
+                        // Update charts
+                        updateCharts(ipData, data.timestamps);
+                    })
+                    .catch(error => console.error('Error fetching stats:', error));
+            }
+            
+            function updateCharts(ipData, timestamps) {
+                // Visits per IP chart
+                visitsChart.data.labels = ipData.slice(0, 5).map(item => item[0]);
+                visitsChart.data.datasets[0].data = ipData.slice(0, 5).map(item => item[1]);
+                visitsChart.update();
+                
+                // Timeline chart (last 24 hours)
+                const now = new Date();
+                const timeLabels = [];
+                const timeData = [];
+                
+                for (let i = 23; i >= 0; i--) {
+                    const time = new Date(now.getTime() - (i * 3600000));
+                    const hour = time.getHours();
+                    timeLabels.push(`${hour}:00`);
+                    
+                    const hourStart = new Date(time).setMinutes(0, 0, 0);
+                    const hourEnd = hourStart + 3600000;
+                    
+                    const visitsThisHour = Object.values(timestamps).filter(t => {
+                        const visitTime = new Date(t).getTime();
+                        return visitTime >= hourStart && visitTime < hourEnd;
+                    }).length;
+                    
+                    timeData.push(visitsThisHour);
+                }
+                
+                timeChart.data.labels = timeLabels;
+                timeChart.data.datasets[0].data = timeData;
+                timeChart.update();
+            }
+        });
+    </script>
+</body>
+</html>
