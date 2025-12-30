@@ -523,7 +523,7 @@ def show_upload_page():
                                     with cols[i % 4]:
                                         feature_img = features[:, :, i]
                                         feature_img = (feature_img - feature_img.min()) / (feature_img.max() - feature_img.min() + 1e-8)
-                                        st.image(feature_img, caption=f"Filter {i+1}", use_container_width=True)
+                                        st.image(feature_img, caption=f"Filter {i+1}", use_column_width=True)
                         else:
                             st.warning("Could not generate feature maps")
 
