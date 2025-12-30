@@ -421,7 +421,7 @@ def show_upload_page():
         with col1:
             st.markdown("#### 📸 Uploaded Image")
             image = Image.open(uploaded_file).convert('RGB')
-            st.image(image, use_container_width=True)
+            st.image(image, use_column_width=True)
         
         with col2:
             st.markdown("#### 🔬 Analysis Options")
