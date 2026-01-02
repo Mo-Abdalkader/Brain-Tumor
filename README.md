@@ -8,6 +8,24 @@ A web application to detect and classify brain tumors from MRI scans using deep 
 
 ![Brain Tumor Classification](https://www.mhsi.com/blog/wp-content/uploads/2021/06/BrainTumor-1250205787-1200x772.jpg)
 
+---
+
+## 🎯 Live Demo
+
+### 🌐 **Try It Now!**
+
+<div align="center">
+
+[![Streamlit App](https://img.shields.io/badge/🧠_Live_Demo-Streamlit-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)](https://brain-tumor-cls.streamlit.app//)
+
+**[🚀 Launch Interactive Demo](https://brain-tumor-cls.streamlit.app/)**
+
+*Experience the full-featured AI-powered brain tumor classifier with real-time predictions and feature maps visualization!*
+
+</div>
+
+---
+
 ## Features
 
 - **MRI Scan Analysis**: Upload brain MRI scans to detect presence of tumors
@@ -148,4 +166,5 @@ The deep learning model uses a convolutional neural network architecture trained
 ---
 
 > **Disclaimer**: This application is for educational and research purposes only. It should not be used for medical diagnosis. Always consult with healthcare professionals for medical advice.
+
 
