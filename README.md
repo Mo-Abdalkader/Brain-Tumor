@@ -48,72 +48,17 @@ A web application to detect and classify brain tumors from MRI scans using deep 
 - **Image Processing**: PIL, NumPy
 - **Analytics**: Custom visitor tracking
 
-## Installation
-
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/Mo-Abdalkader/Brain-Tumor.git
-   cd Brain Tumor
-   ```
-
-2. Create and activate a virtual environment:
-   ```bash
-   python -m venv venv
-   
-   # On Windows
-   venv\Scripts\activate
-
-   # On macOS/Linux
-   source venv/bin/activate
-   ```
-
-3. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-4. Download the pre-trained model:
-   - Create a `models` directory in the project root
-   - Place the trained model file (`final_model.keras`) in the `models` directory
-
-5. Create required directories:
-   ```bash
-   mkdir -p static/uploads
-   ```
-
 ## Usage
 
-1. Start the application:
-   ```bash
-   python app.py
-   ```
-
-2. Open your browser and navigate to:
-   ```
-   http://localhost:5000
-   ```
-
-3. Upload an MRI scan through the interface:
+1. Upload an MRI scan through the interface:
    - Drag and drop an image file
    - Or click to browse and select a file
 
-4. View the analysis results:
+2. View the analysis results:
    - Tumor classification
    - Confidence level
    - Detailed information about the detected condition
    - Recommendations for next steps
-
-## Admin Dashboard
-
-Access visitor statistics through the admin dashboard:
-
-1. Navigate to `/stats`
-2. Login with admin credentials
-3. View metrics including:
-   - Total visits
-   - Unique visitors
-   - Current online users
-   - IP-based statistics
 
 ## Development
 
@@ -121,16 +66,8 @@ Access visitor statistics through the admin dashboard:
 
 ```
 brain-tumor-classification/
-├── app.py                  # Main Flask application
 ├── models/                 # Trained machine learning models
 │   └── final_model.keras
-├── static/                 # Static files (CSS, JS, images)
-│   ├── css/
-│   │   └── style.css
-│   └── uploads/            # Temporary storage for uploads
-├── templates/              # HTML templates
-│   ├── index.html          # Main interface
-│   └── stats.html          # Admin statistics dashboard
 ├── visitor_stats.json      # Analytics data
 └── requirements.txt        # Python dependencies
 ```
@@ -138,13 +75,6 @@ brain-tumor-classification/
 ### Model Details
 
 The deep learning model uses a convolutional neural network architecture trained on a dataset of MRI scans. It achieves classification by identifying patterns in brain tissue that correspond to different tumor types.
-
-## Security Features
-
-- Password-protected admin dashboard
-- Secure file uploads with validation
-- Temporary file storage with automatic cleanup
-- Session management for visitor tracking
 
 ## License
 
@@ -166,5 +96,6 @@ The deep learning model uses a convolutional neural network architecture trained
 ---
 
 > **Disclaimer**: This application is for educational and research purposes only. It should not be used for medical diagnosis. Always consult with healthcare professionals for medical advice.
+
 
 
